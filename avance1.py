@@ -1,3 +1,5 @@
+from graphviz import Graph
+from graphviz import Digraph
 tabla_codones={           
     "GCU": "A", "GCC": "A", "GCA": "A", "GCG": "A", "CGU": "R",
     "CGC": "R", "CGA": "R", "CGG": "R", "AGA": "R", "AGG": "R",
@@ -12,6 +14,12 @@ tabla_codones={
     "AGC": "S", "ACU": "T", "ACC": "T", "ACA": "T", "ACG": "T",
     "UGG": "W", "UAU": "Y", "UAC": "Y", "GUU": "V", "GUC": "V",
     "GUA": "V", "GUG": "V", "UAG": "STOP", "UGA": "STOP", "UAA": "STOP"}
+dic={"CAU":"His","CGC":"Arg","GCU":"Ala","GCC":"Ala", "GCA":"Ala","GCC":"Ala", "CGU":"Arg", "GCG":"Arg", "CGA":"Arg", "CGG":"Arg", "AGA":"Arg",
+    "AGG":"Arg", "AAU":"Asn", "AAC":"Asn", "GAU":"Asp", "GAC":"Asp", "UGU":"Cys", "UGC":"Cys", "CAA":"Gln","CAG":"Gln", "GAA":"Glu", "GAC":"Glu",
+    "GGU":"Gly","GGC":"Gly","GGA":"Gly","GGG":"Gly", "GAU":"His", "CAC":"His",  "AUU":"He", "AUG":"He", "AUA":"He", "UUA":"Leu","UUG":"Leu","CUU":"Leu",
+    "CUC":"Leu","CUA":"Leu","CUG":"Leu", "AAA":"Lys","AAG":"Lys", "AUG":"Met", "UUU":"Phe","UUC":"Phe", "CCU":"Pro","CCC":"Pro","CCA":"Pro","CCG":"Pro",
+    "UCU":"Ser","UCC":"Ser","UCA":"Ser","UCG":"Ser","AGU":"Ser","AGC":"Ser", "ACU":"Thr","ACC":"Thr","ACA":"Thr","ACG":"Thr", "UGG":"Trp", "UAU":"Tyr","UAC":"Tyr",
+    "GUU":"Val","GUC":"Val","GUA":"Val","GUG":"Val", "UAG":"STOP", "UGA":"STOP", "UAA":"STOP"}
     
 menu =int(input ("1. Para leer archivo Fasta y generar secuencia de proteina, ingrese 1\n2. Para obtener estadísticas de la secuencia, ingrese 2. \n3. Para generar diagrama de relación de aminoácido, ingrese 3.\n4.Para salir, ingrese 4: "))
 
@@ -107,8 +115,31 @@ while menu !=4:
                 apolares = apolares+1
         print ("La cantidad de polares sin carga es de", polares_sin_carga,"\nLa cantidad de polares con carga positiva es de", polares_con_carga_positiva,"\nLa cantidad de polares con carga negativa es de", polares_con_carga_negativa,"\nLa cantidad de apolares es de", apolares)
         menu =int(input ("1. Para leer archivo Fasta y generar secuencia de proteina, ingrese 1\n2. Para obtener estadísticas de la secuencia, ingrese 2. \n3. Para generar diagrama de relación de aminoácido, ingrese 3.\nPara salir, ingrese 4: "))
-print ("Ha cerrado la sesión")
+    if menu ==3:
+     g = Digraph('G', filename='grafico.gv',format='png')
+    g.attr('node', shape='circle')
+   
+    
+    i = 0
+    while i+6 !=len(codones):
+        g.attr('node', shape='circle')
+        g.edge(codones[i:i+3],codones[i+3:i+6])
+        i += 3
+        
+    g.attr('node', shape='circle')
+    g.edge(codones[i:i+3],codones[i+3:i+6])
 
+
+    i = 0
+    while i+3 !=len(codones):
+        g.attr('node', shape=('rectangle'))
+        g.edge(codones[i:i+3], str(dic.get(codones[i:i+3])), color='red')
+        i += 3
+
+
+
+    g.view()
+print ("Ha cerrado la sesión")
 
 
 
