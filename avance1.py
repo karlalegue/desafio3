@@ -20,13 +20,13 @@ menu =int(input ("1. Para leer archivo Fasta y generar secuencia de proteina, in
 while menu !=4: 
     if menu == 1: 
         archivo =open(input ("Ingrese el nombre de su archivo: "))
-        nombre = archivo.readline()
-        lineas =archivo.read()
+        nombre = archivo.readline()##Aquí un salto para evitar leer nombre del archivo##
+        lineas =archivo.read()##Leer archivo##
         lineaslimpia = ""
         codon_inicio = ["A", "U", "G"]
-        lineas= lineas.replace ("T", "U")
+        lineas= lineas.replace ("T", "U")##Reemplazo timina por uracilo
         print (lineas)
-        i = 0
+        i = 0 ##ciclo para eliminar
         while i < len(lineas):
             if lineas[i]=='I':
                 while lineas[i]!='F':
@@ -38,7 +38,7 @@ while menu !=4:
 
         codones = ""
         i = 0
-        while i< len(lineaslimpia)-2:
+        while i< len(lineaslimpia)-2:##Busqueda codón AUG##
             if codon_inicio [0]==lineaslimpia[i] and codon_inicio [1] == lineaslimpia[i+1] and codon_inicio [2]== lineaslimpia[i+2]: 
                 while i< len(lineaslimpia)-2:
                     codones = codones + lineaslimpia[i:i+3]
@@ -51,6 +51,9 @@ while menu !=4:
             codon = codones[i]+codones[i+1]+codones[i+2]
             sequence_proteina= sequence_proteina+tabla_codones[codon]
         print (sequence_proteina)
+        archivo_creado = open("SEQUENCE_1_PROTEINA", "w")
+        archivo_creado.write (sequence_proteina)
+        archivo_creado.close()
     menu =int(input ("1. Para leer archivo Fasta y generar secuencia de proteina, ingrese 1\n2. Para obtener estadísticas de la secuencia, ingrese 2. \n3. Para generar diagrama de relación de aminoácido, ingrese 3.\nPara salir, ingrese 4: "))
     if menu == 2: 
         #Nuumero y porcentaje de nucleotidos (A,C,U,G) por secuencia valida.
@@ -59,7 +62,7 @@ while menu !=4:
         nucleotido_C = 0
         nucleotido_U = 0
         nucleotido_G = 0
-        for i in codones:
+        for i in lineaslimpia:
             if i== "A":
                 nucleotido_A= nucleotido_A+1
             elif i== "C":
@@ -74,7 +77,7 @@ while menu !=4:
             porcentaje_C = (nucleotido_C*100)/total_nucleotidos
             porcentaje_U = (nucleotido_U*100)/total_nucleotidos
             porcentaje_G = (nucleotido_G*100)/total_nucleotidos
-        print ("La cantidad de nucleotidos A es de", nucleotido_A, "y su porcentaje es de",(porcentaje_A), "%" "\nLa cantidad de nucleotidos C es de", nucleotido_C, "y su porcentaje es de", (porcentaje_C), "%" "\nLa cantidad de nucleotidos U es de", nucleotido_U, "y su porcentaje es de",(porcentaje_U), "%" "\nLa cantidad de nucleotidos G es de", nucleotido_G, "y su porcentaje es de", (porcentaje_G), "%" "\nLa cantidad total de nucleotidos es de", total_nucleotidos)
+        print ("La cantidad de nucleotidos A es de", (nucleotido_A-2), "y su porcentaje es de",round(porcentaje_A), "%" "\nLa cantidad de nucleotidos C es de", (nucleotido_C-2), "y su porcentaje es de", round(porcentaje_C), "%" "\nLa cantidad de nucleotidos U es de", (nucleotido_U-2), "y su porcentaje es de",round(porcentaje_U), "%" "\nLa cantidad de nucleotidos G es de", (nucleotido_G-2), "y su porcentaje es de", round(porcentaje_G), "%")
         ###Numero y porcentaje de codones por secuencia válida
         codones_encontrados = 0
         i = 0
@@ -82,31 +85,31 @@ while menu !=4:
             codones_encontrados = codones_encontrados +1 
             i = i +3
         porcentaje_codones_encontrados = 100/ (codones_encontrados)
-        print ("La cantidad de codones encontrados es", codones_encontrados, "y su porcentaje es", porcentaje_codones_encontrados)
+        print ("La cantidad de codones encontrados es", codones_encontrados, "y su porcentaje es", porcentaje_codones_encontrados, "%")
         ##NUMERO DE AMINOACIDOS##
+        listapolares_sin_carga= ["S", "T", "C", "Y", "N", "Q"]
+        listapolares_con_cargapositiva= ["H", "R", "K"]
+        listapolares_con_carganegativa= ["D", "E"]
+        lista_apolares = ["G", "A", "V", "L", "I", "F", "W", "M", "P"]
         polares_sin_carga = 0 
         polares_con_carga_positiva= 0
         polares_con_carga_negativa = 0
         apolares = 0
-        for i in codones:  
-            if i == "S" or i == "T" or i == "C" or i == "Y" or i == "N" or i == "Q":
-                polares_sin_carga = polares_sin_carga+1
-            if i == "H" or i == "R" or i == "K":
+        i = 0
+        for i in codones:
+            if i in listapolares_sin_carga: 
+                polares_sin_carga = polares_sin_carga +1
+            if i in listapolares_con_cargapositiva:
                 polares_con_carga_positiva = polares_con_carga_positiva +1
-            if i == "D" or i == "E":
+            if i in listapolares_con_carganegativa:
                 polares_con_carga_negativa = polares_con_carga_negativa +1
-            if i == "G" or i == "A" or i == "V" or i == "L" or i == "I" or i == "F" or i == "W" or i == "M" or i == "P":
+            if i in lista_apolares:
                 apolares = apolares+1
         print ("La cantidad de polares sin carga es de", polares_sin_carga,"\nLa cantidad de polares con carga positiva es de", polares_con_carga_positiva,"\nLa cantidad de polares con carga negativa es de", polares_con_carga_negativa,"\nLa cantidad de apolares es de", apolares)
+        menu =int(input ("1. Para leer archivo Fasta y generar secuencia de proteina, ingrese 1\n2. Para obtener estadísticas de la secuencia, ingrese 2. \n3. Para generar diagrama de relación de aminoácido, ingrese 3.\nPara salir, ingrese 4: "))
 print ("Ha cerrado la sesión")
 
 
-
-'''
-arch= open ("SEQUENCE_1_PROTEINA", "w")
-arch.write (sequence_proteina)
-arch.close()
-'''
 
 
 
